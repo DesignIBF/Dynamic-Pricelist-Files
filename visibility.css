@@ -1,0 +1,7 @@
+.cms-tab.hidden {
+  display: none;
+}
+
+.cms-tab.visible {
+  display: block;
+}
