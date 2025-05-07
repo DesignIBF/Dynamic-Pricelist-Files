@@ -1,5 +1,24 @@
 // Wait for the full HTML document to load before running any code
 document.addEventListener("DOMContentLoaded", function () {
+  console.log("💡 JS loaded and running");
+
+  for (let buttonId in buttonMap) {
+    const button = document.getElementById(buttonId);
+    if (button) {
+      console.log("🔗 Found button:", buttonId);
+      button.addEventListener("click", function (e) {
+        e.preventDefault();
+        e.stopPropagation(); // stop CMS from hijacking
+        const newUrl = buttonMap[buttonId];
+        console.log("🧭 Loading new URL:", newUrl);
+        updateCmsContent(newUrl);
+        setActiveLink(button);
+      });
+    } else {
+      console.warn("⚠️ Button not found:", buttonId);
+    }
+  }
+
   // Map each button <a> ID to the corresponding dynamic product URL
   const buttonMap = {
     i8bph:
