@@ -1,53 +1,58 @@
 // Wait for the full HTML document to load before running any code
 document.addEventListener("DOMContentLoaded", function () {
-  // Map each button ID to the corresponding URL you want it to load
+  // Map each button <a> ID to the corresponding dynamic product URL
   const buttonMap = {
-    loadPage1:
+    i8bph:
       "https://app.ibuyflowers.com/shopping/products?date=20250528&sortBy=best_offer&search=wedding+season&product_group=85e5624a-3128-4892-a306-3e060dd1c8fe%2Cce2aa506-46f0-4fcf-aa42-56da08135155",
-    loadPage2:
+    "i8bph-4-2":
       "https://app.ibuyflowers.com/shopping/products?date=20250528&sortBy=best_offer&search=wedding+season&category=6bbff44f-da60-40cf-9e02-6b59e2405a3d",
-    loadPage3:
+    "i8bph-5":
       "https://app.ibuyflowers.com/shopping/products?date=20250528&sortBy=best_offer&search=wedding+season&category=db41ba37-a4f2-44cf-8763-cdadc282c28f",
-    loadPage4:
+    "i8bph-6":
       "https://app.ibuyflowers.com/shopping/products?date=20250528&sortBy=best_offer&search=wedding+season&category=eef2c47b-cbe2-44c4-bcb9-37ccfd8e43fd",
-    loadPage5:
-      "htthttps://app.ibuyflowers.com/shopping/products?date=20250528&sortBy=best_offer&search=wedding+season&category=cde874e2-cf22-4ea1-99d7-3975bb329b46",
+    "i8bph-4":
+      "https://app.ibuyflowers.com/shopping/products?date=20250528&sortBy=best_offer&search=wedding+season&category=cde874e2-cf22-4ea1-99d7-3975bb329b46",
   };
 
-  // Go through each button ID in the map
+  // Loop through each anchor element and attach a click event
   for (let buttonId in buttonMap) {
-    const button = document.getElementById(buttonId); // Find the button by its ID
+    const button = document.getElementById(buttonId);
     if (button) {
-      button.addEventListener("click", () => {
+      button.addEventListener("click", function (e) {
+        e.preventDefault(); // Prevent the default link behavior
         const newUrl = buttonMap[buttonId];
-        updateCmsContent(newUrl); // Call the function to update the CMS content area
+        updateCmsContent(newUrl); // Replace content dynamically
+        setActiveLink(button); // Update active class styling
       });
     }
   }
 
-  // This function updates the cms-content-list-url and tries to reload the content
+  // Function to update the cms-content-list-url and reload content
   function updateCmsContent(newUrl) {
-    // Find the element that contains the CMS product list
     const cmsDiv = document.querySelector("[cms-content-list-url]");
     if (!cmsDiv) {
       console.error("No CMS content element found.");
       return;
     }
 
-    // Update the cms-content-list-url attribute
     cmsDiv.setAttribute("cms-content-list-url", newUrl);
 
-    // Try to refresh content: some CMS systems offer a JS function to trigger this
     if (typeof window.refreshCmsContent === "function") {
-      window.refreshCmsContent(); // Call it if it exists
+      window.refreshCmsContent();
     } else {
-      // Fallback: manually fetch and inject the HTML from the new URL
       fetch(newUrl)
         .then((res) => res.text())
         .then((html) => {
-          cmsDiv.innerHTML = html; // Replace the content in the CMS area
+          cmsDiv.innerHTML = html;
         })
         .catch((err) => console.error("Failed to load new content:", err));
     }
+  }
+
+  // Optional: highlight the currently active link
+  function setActiveLink(activeAnchor) {
+    const allAnchors = document.querySelectorAll("#iot6z a");
+    allAnchors.forEach((a) => a.classList.remove("active"));
+    activeAnchor.classList.add("active");
   }
 });
