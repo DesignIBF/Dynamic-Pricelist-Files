@@ -19,10 +19,11 @@ document.addEventListener("DOMContentLoaded", function () {
     const button = document.getElementById(buttonId);
     if (button) {
       button.addEventListener("click", function (e) {
-        e.preventDefault(); // Prevent the default link behavior
+        e.preventDefault();
+        e.stopPropagation(); // <== NEW: stop CMS from re-intercepting
         const newUrl = buttonMap[buttonId];
-        updateCmsContent(newUrl); // Replace content dynamically
-        setActiveLink(button); // Update active class styling
+        updateCmsContent(newUrl);
+        setActiveLink(button);
       });
     }
   }
@@ -35,18 +36,29 @@ document.addEventListener("DOMContentLoaded", function () {
       return;
     }
 
+    // Update the attribute
     cmsDiv.setAttribute("cms-content-list-url", newUrl);
+    console.log("Updated cms-content-list-url to:", newUrl);
 
+    // Option 1: If CMS has a re-render method (try this first)
     if (typeof window.refreshCmsContent === "function") {
+      console.log("Calling CMS content refresh...");
       window.refreshCmsContent();
-    } else {
-      fetch(newUrl)
-        .then((res) => res.text())
-        .then((html) => {
-          cmsDiv.innerHTML = html;
-        })
-        .catch((err) => console.error("Failed to load new content:", err));
+      return;
     }
+
+    // Option 2: Fallback — manually fetch and inject content
+    console.log("Manually fetching content...");
+    fetch(newUrl)
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to fetch content");
+        return res.text();
+      })
+      .then((html) => {
+        cmsDiv.innerHTML = html;
+        console.log("Content updated.");
+      })
+      .catch((err) => console.error("Failed to load new content:", err));
   }
 
   // Optional: highlight the currently active link
