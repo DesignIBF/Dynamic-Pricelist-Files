@@ -56,3 +56,5 @@ document.addEventListener("DOMContentLoaded", function () {
     activeAnchor.classList.add("active");
   }
 });
+
+console.log("Ik ben gelinkt");
