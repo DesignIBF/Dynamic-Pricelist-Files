@@ -13,7 +13,7 @@ waitForElement("#cms-tab-one", function () {
   const tab2 = document.getElementById("cms-tab-two");
   const tab3 = document.getElementById("cms-tab-three");
   const tab4 = document.getElementById("cms-tab-four");
-  const tab5 = document.getElementById("cms-tab-five");
+  const tab5 = document.getElementById("cms-tab-fiv");
 
   const button1 = document.querySelector(".cms-button1");
   const button2 = document.querySelector(".cms-button2");
