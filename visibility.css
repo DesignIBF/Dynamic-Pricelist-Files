@@ -1,7 +1,2 @@
-.cms-tab.hidden {
-  display: none;
-}
-
-.cms-tab.visible {
-  display: block;
-}
+.hidden { display: none !important; }
+.visible { display: block !important; }
