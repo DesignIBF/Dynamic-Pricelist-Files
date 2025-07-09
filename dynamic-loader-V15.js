@@ -34,19 +34,20 @@ waitForElement("#cms-tab-one", function () {
   const button11 = document.querySelector(".cms-button11");
 
   const titleElement = document.getElementById("tab-title");
-  const titleMap = [
-    "Category",
-    "Category",
-    "Category",
-    "Category",
-    "Category",
-    "Category",
-    "Category",
-    "Category",
-    "Category",
-    "Category",
-    "Category",
+  const buttons = [
+    button1,
+    button2,
+    button3,
+    button4,
+    button5,
+    button6,
+    button7,
+    button8,
+    button9,
+    button10,
+    button11,
   ];
+  const titleMap = buttons.map((btn) => btn.textContent.trim());
 
   console.log("✅ Elements found:", {
     tab1,
@@ -111,19 +112,7 @@ waitForElement("#cms-tab-one", function () {
   }
 
   function deactivateAllButtons() {
-    [
-      button1,
-      button2,
-      button3,
-      button4,
-      button5,
-      button6,
-      button7,
-      button8,
-      button9,
-      button10,
-      button11,
-    ].forEach((btn) => {
+    buttons.forEach((btn) => {
       btn.classList.remove("active");
     });
   }
