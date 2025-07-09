@@ -8,30 +8,36 @@ function waitForElement(selector, callback) {
   }
 }
 
-fetch(
-  "https://docs.google.com/spreadsheets/d/e/2PACX-1vQeHMuuto0hGKaJ1T2iIpDk3gOx0CQz2CisxZoOtSDksQV_N3Wyr8hVwan5qjXw6ok1AO5Uav0eGOdo/pub?gid=848877691&single=true&output=csv"
-)
-  .then((response) => response.text())
-  .then((data) => {
-    const lines = data.split("\n").slice(1); // skip header
-    const url = lines[0].split(",")[1].trim(); // get first URL, adjust index if needed
+function waitForInputAndInjectURL(sheetUrl) {
+  const input = document.querySelector(".MuiInputBase-input");
+  if (input) {
+    fetch(sheetUrl)
+      .then((response) => response.text())
+      .then((data) => {
+        const lines = data.split("\n").slice(1); // skip header
+        const url = lines[0].split(",")[1].trim(); // get first URL
 
-    const input = document.querySelector(".MuiInputBase-input");
-    if (input) {
-      const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
-        window.HTMLInputElement.prototype,
-        "value"
-      ).set;
-      nativeInputValueSetter.call(input, url);
-      input.dispatchEvent(new Event("input", { bubbles: true }));
-      console.log("✅ URL injected into CMS field:", url);
-    } else {
-      console.error("❌ CMS input field not found.");
-    }
-  })
-  .catch((err) =>
-    console.error("❌ Failed to fetch URLs from Google Sheets:", err)
-  );
+        const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
+          window.HTMLInputElement.prototype,
+          "value"
+        ).set;
+        nativeInputValueSetter.call(input, url);
+        input.dispatchEvent(new Event("input", { bubbles: true }));
+        console.log("✅ URL injected into CMS field:", url);
+      })
+      .catch((err) =>
+        console.error("❌ Failed to fetch URLs from Google Sheets:", err)
+      );
+  } else {
+    console.log("⏳ Waiting for CMS input field...");
+    setTimeout(() => waitForInputAndInjectURL(sheetUrl), 200);
+  }
+}
+
+// Start waiting for the input field before fetching and injecting
+waitForInputAndInjectURL(
+  "https://docs.google.com/spreadsheets/d/e/2PACX-1vQeHMuuto0hGKaJ1T2iIpDk3gOx0CQz2CisxZoOtSDksQV_N3Wyr8hVwan5qjXw6ok1AO5Uav0eGOdo/pub?gid=848877691&single=true&output=csv"
+);
 
 waitForElement("#cms-tab-one", function () {
   const tab1 = document.getElementById("cms-tab-one");
